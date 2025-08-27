@@ -1,19 +1,37 @@
 import pygame, constants
+from player import Player
 
 
 def main():
     pygame.init()
+    clock = pygame.time.Clock()
     screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
-    game_over = False
-    while game_over is False:
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+
+    Player.containers = (updatable, drawable)
+
+    player = Player(constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT / 2)
+
+    dt = 0
+    
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_over = True
+                return
+            
+        updatable.update(dt)
+            
         screen.fill((0,0,0))
+        
+        for obj in drawable:
+            obj.draw(screen)
+       
         pygame.display.flip()
-    print("Starting Asteroids!")
-    print(f"Screen width: {constants.SCREEN_WIDTH}")
-    print(f"Screen height: {constants.SCREEN_HEIGHT}")
+
+        dt = clock.tick(60) / 1000.0  # Limit to 60 FPS and get delta time in seconds
+
 
 
 if __name__ == "__main__":
