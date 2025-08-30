@@ -7,8 +7,10 @@ from shot import Shot
 
 def main():
     pygame.init()
+    pygame.freetype.init()
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT))
+    font = pygame.freetype.SysFont("Arial", 24)
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -36,8 +38,13 @@ def main():
         
         for asteroid in asteroids:
             if asteroid.collide(player):
-                print("Game over!")
-                sys.exit()
+                if player.lives > 0:
+                    player.lives -= 1
+                    asteroid.kill()
+                    print(f"Lives remaining: {player.lives}")
+                else:
+                    print("Game over!")
+                    sys.exit()
 
         for shot in shots:
             for asteroid in asteroids:
@@ -48,6 +55,8 @@ def main():
 
         screen.fill((0,0,0))
         
+        font.render_to(screen, (10, 10), f"Lives remaining: {player.lives}", (255, 255, 255))
+
         for obj in drawable:
             obj.draw(screen)
        
